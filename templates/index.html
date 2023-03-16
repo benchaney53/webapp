@@ -1,32 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>JSON Form</title>
-</head>
-<body>
-	<h1>JSON Form</h1>
-	<form method="POST" action="/">
-		<label for="name">Name:</label>
-		<input type="text" id="name" name="name">
-		<label for="age">Age:</label>
-		<input type="number" id="age" name="age">
-		<button type="submit">Submit</button>
-	</form>
-	<script>
-		document.querySelector('form').addEventListener('submit', (event) => {
-			event.preventDefault();
-			const name = document.querySelector('#name').value;
-			const age = document.querySelector('#age').value;
-			const data = JSON.stringify({'name': name, 'age': age});
-			fetch('/', {
-				method: 'POST',
-				headers: {'Content-Type': 'application/json'},
-				body: data
-			})
-			.then(response => response.json())
-			.then(data => console.log(data))
-			.catch(error => console.error(error));
-		});
-	</script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>PDF Form Field Extractor</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+  </head>
+  <body>
+    <h1>PDF Form Field Extractor</h1>
+    <form method="post" enctype="multipart/form-data">
+
+      <button type="submit">Extract form fields and download as JSON</button>
+    </form>
+  </body>
 </html>

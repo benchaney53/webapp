@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit JSON</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        let jsonData = null;
+
+        function loadJsonFile(event) {
+            const input = event.target;
+            const reader = new FileReader();
+            reader.onload = function () {
+                jsonData = JSON.parse(reader.result);
+                generateForm(jsonData);
+            };
+            reader.readAsText(input.files[0]);
+        }
+
+        function generateForm(jsonData) {
+            const form = document.getElementById("json-form");
+            form.innerHTML = "";
+            for (const key in jsonData) {
+                if (jsonData.hasOwnProperty(key)) {
+                    const div = document.createElement("div");
+                    const label = document.createElement("label");
+                    label.setAttribute("for", key);
+                    label.textContent = key;
+                    const input = document.createElement("input");
+                    input.setAttribute("type", "text");
+                    input.setAttribute("id", key);
+                    input.setAttribute("name", key);
+                    input.value = jsonData[key];
+                    div.appendChild(label);
+                    div.appendChild(input);
+                    form.appendChild(div);
+                }
+            }
+        }
+
+        function updateJsonData(event) {
+            const input = event.target;
+            jsonData[input.id] = input.value;
+        }
+
+        function submitForm() {
+            if (jsonData) {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData));
+                const downloadAnchorNode = document.createElement("a");
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "edited_json.json");
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('pdf_extractor') }}">PDF Extractor</a>
+        <a href="{{ url_for('json_to_pdf') }}">JSON to PDF</a>
+        <a href="{{ url_for('edit_json') }}">Edit JSON</a>
+    </div>
+    <div class="main">
+        <div class="center">
+            <h1>Edit JSON</h1>
+            <div class="form-container">
+                <label for="json-file">Upload JSON file:</label>
+                <input type="file" id="json-file" name="json-file" accept=".json" onchange="loadJsonFile(event)" required>
+                <br>
+                <form id="json-form" oninput="updateJsonData(event)">
+                    <!-- The form will be generated dynamically here -->
+                </form>
+                <button onclick="submitForm()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
