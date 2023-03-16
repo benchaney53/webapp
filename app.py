@@ -1,15 +1,14 @@
-from flask import Flask, render_template
-import os
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    # Get a list of all the image files in the directory
-    image_files = [f for f in os.listdir('static/images') if f.endswith('.jpg') or f.endswith('.png')]
-
-    # Render the template with the list of image files
-    return render_template('index.html', image_files=image_files)
+    if request.method == 'POST':
+        data = request.json
+        # Do something with the JSON data
+        return jsonify({'message': 'Data received successfully!'})
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
