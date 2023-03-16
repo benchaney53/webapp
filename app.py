@@ -1,25 +1,15 @@
+from flask import Flask, render_template
 import os
-from flask import Flask, render_template, request
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
-app.secret_key = 'secret'
 
-class UploadForm(FlaskForm):
-    photo = FileField(validators=[FileRequired()])
+@app.route('/')
+def index():
+    # Get a list of all the image files in the directory
+    image_files = [f for f in os.listdir('static/images') if f.endswith('.jpg') or f.endswith('.png')]
 
-@app.route('/', methods=['GET', 'POST'])
-def upload():
-    form = UploadForm()
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            photo = form.photo.data
-            filename = photo.filename
-            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return 'File uploaded successfully!'
-    return render_template('upload.html', form=form)
+    # Render the template with the list of image files
+    return render_template('index.html', image_files=image_files)
 
 if __name__ == '__main__':
     app.run(debug=True)
