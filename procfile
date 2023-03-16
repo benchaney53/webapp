@@ -1,1 +1,1 @@
-web: gunicorn <module-name>:photo-upload
+web: gunicorn app:app.py
